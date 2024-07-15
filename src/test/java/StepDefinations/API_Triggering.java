@@ -2,7 +2,6 @@ package StepDefinations;
 
 
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -10,12 +9,13 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.example.Configure;
 import org.junit.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static io.restassured.RestAssured.config;
 
 public class API_Triggering {
 
@@ -26,7 +26,7 @@ public class API_Triggering {
     @Given("I Triggered the URL")
     public void I_Triggered_the_URL() {
         try {
-            RestAssured.baseURI = "http://localhost:3000/";
+            RestAssured.baseURI = Configure.config.getProperty("URL");
             System.out.println("Connection Done");
         } catch (Exception e) {
             System.out.println("Exception: " + e);
