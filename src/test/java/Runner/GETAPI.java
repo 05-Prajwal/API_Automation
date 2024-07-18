@@ -5,7 +5,7 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "src/test/java/Features/GetAPI.feature", glue = {"StepDefinations"})
+@CucumberOptions(features = "src/test/java/Features/PostAPI.feature", glue = {"StepDefinations"})
 public class GETAPI {
 
 }

@@ -6,22 +6,28 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.example.CommonMethods;
 import org.example.Configure;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.config;
+import static org.example.CommonMethods.createPostRequest;
 
 public class API_Triggering {
 
     public int Status_code;
     public RequestSpecification Request;
     public Response Response;
+    public List<Map<String,String>> data;
 
     @Given("I Triggered the URL")
     public void I_Triggered_the_URL() {
@@ -57,7 +63,7 @@ public class API_Triggering {
 
             JsonPath jsnp = Response.jsonPath();
 
-            List<Map<String,String>> data= table.asMaps();
+            data= table.asMaps();
             System.out.println(data.get(1).get("id"));
 
             Assert.assertEquals(data.get(0).get("id"),jsnp.get("id[0]").toString());
@@ -94,5 +100,34 @@ public class API_Triggering {
             Assert.assertFalse("Response validation failed", true);
         }
 
+    }
+
+    @When("I want the to create new {word}")
+    public void iWantTheToCreateNewUsers(String endpoint,DataTable table) {
+        try {
+            Request=RestAssured.given().contentType(ContentType.JSON).accept(ContentType.JSON);
+
+            data=table.asMaps();
+            JSONObject reqBody = new JSONObject();
+            reqBody=createPostRequest(endpoint,data);
+            System.out.println("Request: "+reqBody);
+            Response=Request.body(reqBody.toJSONString()).post(endpoint);
+
+        }catch (Exception e){
+            System.out.println("Exception: "+e);
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Then("Validate the response code {int}")
+    public void validateTheResponseCode(int Response_code) {
+        try {
+            Status_code=Response.getStatusCode();
+            Assert.assertEquals("Post Response code validation failed",Response_code,Status_code);
+            System.out.println("Response: "+Response.getBody().asString());
+        }catch (Exception e){
+            System.out.println("Exception: "+e);
+            Assert.assertTrue(false);
+        }
     }
 }
